@@ -1,0 +1,39 @@
+# TStarJetPico reader settings
+# lines starting with # are ignored
+# lines starting with all:: are used for both data sets
+# lines starting with mc:: are used only for the pythia trees
+# lines starting with geant:: are used only for geant processed trees
+
+# the data file(s)
+all::data = ${CMAKE_SOURCE_DIR}/test_data/picoDst_25_35_0.root
+
+# number of events to run over, -1 runs over all events
+all::number_of_events = -1
+
+# trigger selection: can be set to "All", "HT", "MB", "pp", "ppHT", "ppJP"...
+all::trigger = All
+
+# set a refmult cut but since its pp, not sure how useful it would be
+all::refmult_cut = 0
+
+# set a vz cut, not sure if geant simulates a vz position or if it always chooses zero
+all::vz_cut = 30
+
+# set a vz - vpd vz cut, not sure if geant simulates a vz position or if it always chooses zero
+all::vz_diff_cut = 30
+
+# if an event has a charged track with pt > event_pt_cut, discard event
+all::event_pt_cut = 30
+
+# if an event has a calorimeter hit with et > event_et_cut, discard event
+all::event_et_cut = 30
+
+# track cuts
+geant::dca_cut = 3
+geant::min_fit_points = 20
+geant::min_fit_point_frac = 0.51
+
+# to save myself from weird 0 > 0 cases
+pythia::dca_cut = 100000
+pythia::min_fit_points = -1
+pythia::min_fit_point_frac = -1

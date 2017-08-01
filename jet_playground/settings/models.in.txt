@@ -1,0 +1,10 @@
+## options for the back half of the analysis -
+## jet analysis settings to define the input file
+
+input::dir    = ${CMAKE_BINARY_DIR}/training
+
+input::algo   = antikt
+input::res    = 0.4
+input::inc    = false
+input::charge = false
+input::naive  = false
