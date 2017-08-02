@@ -5,6 +5,7 @@ import pandas
 ''' Used internally to check the hash of an entry's index 
     to determine if it will be in the test set or training set. '''
 def test_set_check( identifier, test_ratio, hash ):
+  print(hash( np.int64(identifier)).digest()[-1])
   return hash( np.int64(identifier)).digest()[-1] < 256 * test_ratio
 
 ''' splits a data set into two sets with relative sizes of test_ration*n_entries
@@ -13,7 +14,6 @@ def test_set_check( identifier, test_ratio, hash ):
 def split_train_test_by_id( data, test_ratio, id_column, hash=hashlib.md5 ):
   ids = data[id_column]
   in_test_set = ids.apply( lambda id_: test_set_check( id_, test_ratio, hash ) )
-  print(in_test_set)
   return data.loc[~in_test_set], data.loc[in_test_set]
 
 ''' prints cross validation scores, their means and the standard deviation. '''
