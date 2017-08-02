@@ -105,8 +105,9 @@ def main( args ):
       ## nothing is terribly beyond values of 0-10, for now don't scale
       pipeline = transforms.build_transform(poly_order)
       polynomial_transform = PolynomialFeatures(degree=poly_order)
-      X_train_prepared = polynomial_transform.fit_transform( X_train )
       X_test_prepared = polynomial_transform.fit_transform( X_test )
+      X_train_prepared = polynomial_transform.fit_transform( X_train )
+      
 
 
       ## build our output dataframe
