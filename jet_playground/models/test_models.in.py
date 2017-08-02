@@ -94,6 +94,8 @@ def main( args ):
       train_data, test_data = tools.split_train_test_by_id(pt_scaled, test_ratio, "index" )
       print("TEST DATA")
       test_data.info()
+      print("TRAIN DATA")
+      train_data.info()
       ## split out the data we want to build models with, and labels
       input_columns = [ "pt", "eta", "phi", "ncharge", "charge_frac", "area" ]
       output_columns = [ "reco_pt" ]
