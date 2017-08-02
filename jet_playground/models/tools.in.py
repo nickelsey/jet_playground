@@ -5,7 +5,7 @@ import pandas
 ''' Used internally to check the hash of an entry's index 
     to determine if it will be in the test set or training set. '''
 def test_set_check( identifier, test_ratio, hash ):
-  return int(hash( np.int64(identifier)).digest()[-1]) < 256 * test_ratio
+  return int(hash( np.int64(identifier)).hexdigest()[-1]) < 256 * test_ratio
 
 ''' splits a data set into two sets with relative sizes of test_ration*n_entries
     and (1-test_ratio)*n_entries, where each item will always appear in the same
