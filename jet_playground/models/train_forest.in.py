@@ -8,9 +8,9 @@ def train_forest( X, y, n_est=[ 3, 6, 10, 12, 15, 30 ], max_feat=[ 1, 3, 10, 20,
   forest_reg = RandomForestRegressor()
   grid_search = GridSearchCV(forest_reg, param_grid, cv=5, scoring='neg_mean_squared_error', verbose=verbose, n_jobs=n_jobs)
   grid_search.fit( X, y )
-  print(grid_search.best_estimator_)
   cvres = grid_search.cv_results_
   for mean_score, params in zip(cvres["mean_test_score"], cvres["params"]):
       print(np.sqrt(-mean_score), params)
+  print(grid_search.best_estimator_)
   return grid_search.best_estimator_
 
