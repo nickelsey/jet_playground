@@ -33,8 +33,6 @@ log
 # after cloning
 out
 out/*
-test
-test/*
 tmp
 tmp/*
 bin
