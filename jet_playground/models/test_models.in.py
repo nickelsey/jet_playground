@@ -28,6 +28,8 @@ from sklearn.tree import DecisionTreeRegressor
 import tools
 import train_linear as linear
 import train_forest as forest
+import train_tree as tree
+import train_kn as knn
 import readTree as rt
 import transforms
 
