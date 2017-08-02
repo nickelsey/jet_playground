@@ -86,7 +86,7 @@ def main( args ):
       
       ## split into train & test data, to do so we need an index
       pt_scaled['index'] = [ i for i in range(1,pt_scaled.shape[0]+1) ]
-      pt_scaled.info()
+      
       ## split by hashing the index, which keeps the training set equavalent
       ## between runs, as long as the dataframe has only been appended to
       ## and not shuffled
@@ -99,7 +99,7 @@ def main( args ):
       X_train, y_train = train_data[ input_columns ], train_data[ output_columns ]
       X_test,  y_test  = test_data[ input_columns ], test_data[ output_columns ]
 
-
+      print(X_test)
       ## ~~~~~~~~~~~~        SCALING        ~~~~~~~~~~~##
       ## nothing is terribly beyond values of 0-10, for now don't scale
       pipeline = transforms.build_transform(poly_order)
