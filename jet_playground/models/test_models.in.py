@@ -114,7 +114,7 @@ def main( args ):
       # linear models
       if use_linear:
           print( "Training linear models")
-          best_linear_model = linear.train_linear_regressor( X_train_prepared, y_train, fit_intercept=[True] )
+          best_linear_model = linear.train_linear_regressor( X_train_prepared, y_train, fit_intercept=[True], n_jobs=max_jobs )
           linear_predictions = np.array(best_linear_model.predict( X_test_prepared )).squeeze()
           tools.compare_model_to_geant( y_test['reco_pt'], geant=X_test['pt'], model=linear_predictions, model_name="Linear" )
           df_out['linear_pt'] = linear_predictions
@@ -126,7 +126,7 @@ def main( args ):
             n_features = X_train_prepared.shape[1]
           else:
             n_features = [ i for i in range(1, X_train_prepared.shape[1], int(X_train_prepared.shape[1]/10)) if i < X_train_prepared.shape[1]  ]
-          best_forest = forest.train_forest( X_train_prepared, y_train['reco_pt'], max_feat=n_features, n_est=[ 3, 6, 10, 15, 20, 30 ], n_jobs=3 )
+          best_forest = forest.train_forest( X_train_prepared, y_train['reco_pt'], max_feat=n_features, n_est=[ 3, 6, 10, 15, 20, 30 ], n_jobs=max_jobs )
           forest_predictions = np.array(best_forest.predict(X_test_prepared)).squeeze()
           tools.compare_model_to_geant( y_test['reco_pt'], geant=X_test['pt'], model=forest_predictions, model_name="Forest" )
           df_out['forest_pt'] = forest_predictions
@@ -136,7 +136,7 @@ def main( args ):
           print( "Training decision tree models")
           best_tree_model = tree.train_tree( X_train_prepared, y_train, n_jobs=3 )
           tree_predictions = np.array(best_tree_model.predict( X_test_prepared )).squeeze()
-          tools.compare_model_to_geant( y_test['reco_pt'], geant=X_test['pt'], model=tree_predictions, model_name="Decision Tree" )
+          tools.compare_model_to_geant( y_test['reco_pt'], geant=X_test['pt'], model=tree_predictions, model_name="Decision Tree", n_jobs=max_jobs )
           df_out['tree_pt'] = tree_predictions
 
       # KNN models
@@ -144,7 +144,7 @@ def main( args ):
           print( "Training KNN models")
           best_knn_model = knn.train_knn( X_train_prepared, y_train, n_jobs=3 )
           knn_predictions = np.array(best_knn_model.predict( X_test_prepared )).squeeze()
-          tools.compare_model_to_geant( y_test['reco_pt'], geant=X_test['pt'], model=knn_predictions, model_name="Decision Tree" )
+          tools.compare_model_to_geant( y_test['reco_pt'], geant=X_test['pt'], model=knn_predictions, model_name="Decision Tree", n_jobs=max_jobs )
           df_out['knn_pt'] = knn_predictions
 
       ## write file out
