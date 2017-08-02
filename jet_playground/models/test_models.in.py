@@ -101,6 +101,7 @@ def main( args ):
       
       X_test.info()
       print(X_test)
+      print("SHAPE: ", X_test.shape)
       ## ~~~~~~~~~~~~        SCALING        ~~~~~~~~~~~##
       ## nothing is terribly beyond values of 0-10, for now don't scale
       pipeline = transforms.build_transform(poly_order)
