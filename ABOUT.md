@@ -12,4 +12,5 @@ any event kinematics that would be available to someone working on recorded data
 
 I'll update this as it goes along
 
-I'm currently working on: reading the data in from a root tree to a pandas data frame
+I'm currently working on: faster pipelining for models and getting tensorflow up 
+and running
