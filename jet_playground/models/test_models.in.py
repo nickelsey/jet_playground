@@ -92,10 +92,7 @@ def main( args ):
       ## and not shuffled
       test_ratio = 0.2
       train_data, test_data = tools.split_train_test_by_id(pt_scaled, test_ratio, "index" )
-      print("train data" )
-      train_data.info()
-      print("test data")
-      test_data.info()
+      
       ## split out the data we want to build models with, and labels
       input_columns = [ "pt", "eta", "phi", "ncharge", "charge_frac", "area" ]
       output_columns = [ "reco_pt" ]

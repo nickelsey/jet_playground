@@ -13,6 +13,7 @@ def test_set_check( identifier, test_ratio, hash ):
 def split_train_test_by_id( data, test_ratio, id_column, hash=hashlib.md5 ):
   ids = data[id_column]
   in_test_set = ids.apply( lambda id_: test_set_check( id_, test_ratio, hash ) )
+  print(in_test_set)
   return data.loc[~in_test_set], data.loc[in_test_set]
 
 ''' prints cross validation scores, their means and the standard deviation. '''
