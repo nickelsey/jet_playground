@@ -92,21 +92,16 @@ def main( args ):
       ## and not shuffled
       test_ratio = 0.2
       train_data, test_data = tools.split_train_test_by_id(pt_scaled, test_ratio, "index" )
-      
+      print("train data" )
+      train_data.info()
+      print("test data")
+      test_data.info()
       ## split out the data we want to build models with, and labels
       input_columns = [ "pt", "eta", "phi", "ncharge", "charge_frac", "area" ]
       output_columns = [ "reco_pt" ]
       X_train, y_train = train_data[ input_columns ], train_data[ output_columns ]
       X_test,  y_test  = test_data[ input_columns ], test_data[ output_columns ]
       
-      print("X_TRAIN")
-      print("SHAPE: ", X_train.shape)
-      print("Y_TRAIN")
-      print("SHAPE: ", y_train.shape)
-      print("X_TEST")
-      print("SHAPE: ", X_test.shape)
-      print("Y_TEST")
-      print("SHAPE: ", y_test.shape)
       ## ~~~~~~~~~~~~        SCALING        ~~~~~~~~~~~##
       ## nothing is terribly beyond values of 0-10, for now don't scale
       pipeline = transforms.build_transform(poly_order)
