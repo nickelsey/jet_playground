@@ -98,7 +98,8 @@ def main( args ):
       output_columns = [ "reco_pt" ]
       X_train, y_train = train_data[ input_columns ], train_data[ output_columns ]
       X_test,  y_test  = test_data[ input_columns ], test_data[ output_columns ]
-
+      
+      X_test.info()
       print(X_test)
       ## ~~~~~~~~~~~~        SCALING        ~~~~~~~~~~~##
       ## nothing is terribly beyond values of 0-10, for now don't scale
