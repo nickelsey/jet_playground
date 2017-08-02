@@ -140,7 +140,7 @@ def main( args ):
           df_out['tree_pt'] = tree_predictions
 
       # KNN models
-      if use_tree:
+      if use_knn:
           print( "Training KNN models")
           best_knn_model = knn.train_knn( X_train_prepared, y_train, n_jobs=3 )
           knn_predictions = np.array(best_knn_model.predict( X_test_prepared )).squeeze()
