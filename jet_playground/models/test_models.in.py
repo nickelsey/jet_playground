@@ -144,7 +144,7 @@ def main( args ):
       # KNN models
       if use_knn:
           print( "Training KNN models")
-          best_knn_model = knn.train_knn( X_train_prepared, y_train, n_jobs=3, n_jobs=max_jobs )
+          best_knn_model = knn.train_knn( X_train_prepared, y_train, n_jobs=max_jobs )
           knn_predictions = np.array(best_knn_model.predict( X_test_prepared )).squeeze()
           tools.compare_model_to_geant( y_test['reco_pt'], geant=X_test['pt'], model=knn_predictions, model_name="KNN" )
           df_out['knn_pt'] = knn_predictions
