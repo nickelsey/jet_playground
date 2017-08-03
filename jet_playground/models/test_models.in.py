@@ -136,9 +136,9 @@ def main( args ):
       # decision tree models
       if use_tree:
           print( "Training decision tree models")
-          best_tree_model = tree.train_tree( X_train_prepared, y_train, n_jobs=3 )
+          best_tree_model = tree.train_tree( X_train_prepared, y_train, n_jobs=max_jobs )
           tree_predictions = np.array(best_tree_model.predict( X_test_prepared )).squeeze()
-          tools.compare_model_to_geant( y_test['reco_pt'], geant=X_test['pt'], model=tree_predictions, model_name="Decision Tree", n_jobs=max_jobs )
+          tools.compare_model_to_geant( y_test['reco_pt'], geant=X_test['pt'], model=tree_predictions, model_name="Decision Tree" )
           df_out['tree_pt'] = tree_predictions
 
       # KNN models
