@@ -124,7 +124,7 @@ def main( args ):
       if use_forest:
           print("training random forest models")
           if X_train_prepared.shape[1] <= 10:
-            n_features = X_train_prepared.shape[1]
+            n_features = [ i for i < X_train_prepared.shape[1] ]
           else:
             n_features = [ i for i in range(1, X_train_prepared.shape[1], int(X_train_prepared.shape[1]/10)) if i < X_train_prepared.shape[1]  ]
           best_forest = forest.train_forest( X_train_prepared, y_train['reco_pt'], max_feat=n_features, n_est=[ 3, 6, 10, 15, 20, 30 ], n_jobs=max_jobs )
