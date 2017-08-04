@@ -39,7 +39,6 @@ def main( args ):
       ## use command line options to define which models
       ## will be trained
       use_linear = args.linear
-      use_nn = args.NN
       use_forest = args.forest
       use_tree = args.tree
       use_knn = args.knn
@@ -160,7 +159,6 @@ if __name__ == "__main__":
       parser.add_argument('--forest', type=bool, help=' train random forest')
       parser.add_argument('--tree', type=bool, help=' train decision tree' )
       parser.add_argument('--knn', type=bool, help=' train KNN regressor' )
-      parser.add_argument('--NN', type=bool, help=' train neural network')
       parser.add_argument('--poly', type=int, help=' create polynomials to order poly from all features')
       parser.add_argument('--maxjobs',type=int, help=' max number of parallel jobs to run')
       args = parser.parse_args()
