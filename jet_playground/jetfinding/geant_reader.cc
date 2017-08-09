@@ -51,7 +51,7 @@ bool geant_reader::init() {
   // out, so please format & spell properly.
   int n_events = -1;
   try {
-  n_events = parse_settings();
+    n_events = parse_settings();
   } catch ( std::exception& e ) {
     return false;
   }
