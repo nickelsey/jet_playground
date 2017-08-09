@@ -147,7 +147,7 @@ private:
   
 protected:
   /** used to get the relative weight for each event ( high pT jets are
-      oversampled in the Geant data to get weight in the tail of the distribution
+      oversampled in the Geant data to get weight in the tail of the distribution )
    */
   double LookupXsec ();
   

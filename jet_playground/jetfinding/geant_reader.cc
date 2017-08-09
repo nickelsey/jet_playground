@@ -435,7 +435,7 @@ std::vector<std::string> split_string( const std::string s, std::string split ) 
 }
 
 bool HasEnding (std::string const &full_string, std::string const &ending) {
-		if (full_string.length() >= ending.length()) {
+    if (full_string.length() >= ending.length()) {
       return (0 == full_string.compare (full_string.length() - ending.length(), ending.length(), ending) );
     } else {
       return false;

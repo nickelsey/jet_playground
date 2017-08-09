@@ -68,12 +68,6 @@ def main( args ):
       X_test_prepared = polynomial_transform.fit_transform( X_test )
       X_train_prepared = polynomial_transform.fit_transform( X_train )
 
-      
-
-
-
-
-
 
 
 
