@@ -60,3 +60,7 @@ training/*
 
 # condor file
 CondorFile
+
+# some of our output files from .in.* files
+geant_reader.cc
+process_geant.cc
