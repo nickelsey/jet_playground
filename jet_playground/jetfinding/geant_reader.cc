@@ -47,8 +47,8 @@ geant_reader::geant_reader( const std::string& settings_doc, const std::string& 
 bool geant_reader::init() {
   
   // try to parse all settings found in
-  // the settings file. An unknown setting will error
-  // out, so please format & spell properly.
+  // the settings file. Unknown strings are
+  // exceptions, not ignored.
   int n_events = -1;
   try {
     n_events = parse_settings();
