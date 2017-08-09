@@ -105,10 +105,8 @@ private:
       including jet level & event level information,
       as well as the truth labels
    */
-  
-  TBranch* b_train_eta_, *b_train_phi_, *b_train_pt_, *b_train_area_, *b_train_npart_, *b_train_charge_frac_, *b_train_weight;
+  TClonesArray geant_array_, pythia_array_;
   double train_eta_, train_phi_, train_pt_, train_area_, train_npart_, train_charge_frac_, train_weight;
-  TBranch* b_label_eta_, *b_label_phi_, *b_label_pt_, *b_label_weight;
   double label_eta_, label_phi_, label_pt_;
   
   /** used to fill jets & event info to the ttrees

@@ -51,7 +51,7 @@ bool geant_reader::init() {
   // out, so please format & spell properly.
   int n_events = -1;
   try {
-  n_events = parse_settings();
+    n_events = parse_settings();
   } catch ( std::exception& e ) {
     return false;
   }
@@ -435,7 +435,7 @@ std::vector<std::string> split_string( const std::string s, std::string split ) 
 }
 
 bool HasEnding (std::string const &full_string, std::string const &ending) {
-		if (full_string.length() >= ending.length()) {
+    if (full_string.length() >= ending.length()) {
       return (0 == full_string.compare (full_string.length() - ending.length(), ending.length(), ending) );
     } else {
       return false;

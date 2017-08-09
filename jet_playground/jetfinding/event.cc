@@ -6,8 +6,9 @@
 #include <exception>
 
 event::event( const std::string& input_file,
-              const std::string& settings_doc ) :
-              geant_reader( settings_doc, input_file ) {}
+              const std::string& settings_doc ) : geant_reader( settings_doc, input_file ) {
+
+}
 
 event::~event() {
   
@@ -91,17 +92,17 @@ void event::init_tree() {
   // event information
   
   
-  b_train_pt_          = train_data_->Branch("pt", &train_pt_ );
-  b_train_phi_         = train_data_->Branch("phi", &train_phi_ );
-  b_train_eta_         = train_data_->Branch("eta", &train_eta_ );
-  b_train_area_        = train_data_->Branch("area", &train_area_ );
-  b_train_npart_       = train_data_->Branch("ncharge", &train_npart_ );
-  b_train_charge_frac_ = train_data_->Branch("charge_frac", &train_charge_frac_ );
-  b_train_weight       = train_data_->Branch("weight", &train_weight );
+  train_data_->Branch("pt", &train_pt_ );
+  train_data_->Branch("phi", &train_phi_ );
+  train_data_->Branch("eta", &train_eta_ );
+  train_data_->Branch("area", &train_area_ );
+  train_data_->Branch("ncharge", &train_npart_ );
+  train_data_->Branch("charge_frac", &train_charge_frac_ );
+  train_data_->Branch("weight", &train_weight );
   
-  b_label_pt_          = train_data_->Branch( "reco_pt", &label_pt_ );
-  b_label_phi_         = train_data_->Branch( "reco_phi", &label_phi_ );
-  b_label_eta_         = train_data_->Branch( "reco_eta", &label_eta_ );
+  train_data_->Branch( "reco_pt", &label_pt_ );
+  train_data_->Branch( "reco_phi", &label_phi_ );
+  train_data_->Branch( "reco_eta", &label_eta_ );
   
 }
 

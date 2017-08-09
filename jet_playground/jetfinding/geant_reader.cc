@@ -29,11 +29,11 @@ bool HasEnding (std::string const &full_string, std::string const &ending);
 /** default initializer that assumes an unmodified file structure in the 
     source directory, it will run with "normal" reader settings
  */
-geant_reader::geant_reader() {
+geant_reader::geant_reader() :
   settings_ = "/Users/nick/physics/analysis/jet_playground/build/settings/reader.txt";
   input_file_path_ = "";
 
-}
+{}
 
 /** allows the user to specify both a non-default settings file, and a 
     input file for the data trees
