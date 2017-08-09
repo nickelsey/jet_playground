@@ -21,3 +21,7 @@ build/bin
 
 everything in build/bin/test are just there for me to play around with
 cmake and some of its properties
+
+currently rebuilding the jetfinding library, and probably moving the 
+ML portions from python to c++ (using mlpack I think... i like what 
+I saw. And I can use the c++ tensorflow API )

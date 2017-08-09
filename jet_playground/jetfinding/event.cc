@@ -213,5 +213,9 @@ fastjet::Selector SelectorUserIndex( const std::vector<int> usr_idx = std::vecto
   return fastjet::Selector( new SelectorUserIndexWorker( usr_idx ) );
 }
 
+//________________________________________________________________
+/** class that allows a pseudojet to be written directly to a TClonesArray */
+TPseudoJet::TPseudoJet() : fastjet::PseudoJet(), TObject() {}
+TPseudoJet::TPseudoJet( const fastjet::PseudoJet& ps ) : fastjet::PseudoJet(ps), TObject() {}
 
 

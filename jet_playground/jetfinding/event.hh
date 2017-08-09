@@ -150,5 +150,15 @@ private:
 /** the selector built from the above worker */
 fastjet::Selector SelectorUserIndex( const std::vector<int> usr_idx );
 
+//________________________________________________________________
+/** class that allows a pseudojet to be written directly to a TClonesArray */
+class TPseudoJet : public fastjet::PseudoJet, public TObject {
+public:
+  
+  TPseudoJet();
+  TPseudoJet( const fastjet::PseudoJet& ps );
+  
+};
+
 
 #endif
