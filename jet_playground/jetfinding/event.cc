@@ -126,7 +126,7 @@ void event::match_jets( double radius ) {
   std::vector<fastjet::PseudoJet> matched_pythia;
   
   for ( unsigned i = 0; i < pythia_jets_.size(); ++i ) {
-    /** match to the geant jet via radial distance, choosing high momentum jets
+    /** match to pythia jet via radial distance, choosing high momentum jets
         preferentially, since both geant_jets and pythia_jets are sorted by pt
      */
     
