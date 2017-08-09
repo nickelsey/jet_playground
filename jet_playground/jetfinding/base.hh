@@ -18,7 +18,7 @@
 #define __ERR(message) {std::cerr << "[" << __FILE__ << "::" << __func__ << "()] -- ERR: " << message << std::endl;}
 #define __OUT(message) {std::cout << "[" << __FILE__ << "::" << __func__ << "()] -- OUT: " << message << std::endl;}
 
-/** I tool this value from the internet, that could
+/** I took this value from the internet, that could
     be dangerous...
  */
 
