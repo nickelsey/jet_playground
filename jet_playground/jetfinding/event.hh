@@ -49,17 +49,17 @@ public:
    */
   bool process_event( const fastjet::JetDefinition& jet_def, const fastjet::AreaDefinition& area_def,
                     const fastjet::Selector& constituent_selector, const fastjet::Selector jet_selector,
-                    bool inclusive_jets, bool charged_jets );
+                    bool charged_jets );
   
   /** performs the clustering and matching for full jets ( charged and neutral) */
   bool process_full( const fastjet::JetDefinition& jet_def, const fastjet::AreaDefinition& area_def,
-                const fastjet::Selector& constituent_selector, const fastjet::Selector jet_selector,
-                bool inclusive_jets );
+                const fastjet::Selector& constituent_selector, const fastjet::Selector jet_selector
+                 );
   
   /** same methodology but uses only charged constituents */
   bool process_charged( const fastjet::JetDefinition& jet_def, const fastjet::AreaDefinition& area_def,
-                       const fastjet::Selector& constituent_selector, const fastjet::Selector jet_selector,
-                       bool inclusive_jets );
+                       const fastjet::Selector& constituent_selector, const fastjet::Selector jet_selector
+                       );
   
   /** call to propogate current event to the tree. If its not
       called, no information from the current event will be 
@@ -86,7 +86,6 @@ private:
       in which case we don't delete or write it
    */
   TTree* train_data_;
-  bool own_training;
   
   
   /** holders for the clustered jets so they can be manipulated 
@@ -105,16 +104,17 @@ private:
       including jet level & event level information,
       as well as the truth labels
    */
-  TClonesArray geant_array_, pythia_array_;
-  double train_eta_, train_phi_, train_pt_, train_area_, train_npart_, train_charge_frac_, train_weight;
-  double label_eta_, label_phi_, label_pt_;
+  TLorentzVector geant_jet_, pythia_jet_;
+  TClonesArray* geant_constituents_, *pythia_constituents_;
+  
+  /** further variables stored in the tree */
+  unsigned long eventID;
   
   /** used to fill jets & event info to the ttrees
    can either write all jets ( inclusive ) or
    writes the leading jet
    */
   void fill_tree( const fastjet::Selector& constituent_selector );
-  void fill_tree_inclusive( const fastjet::Selector& constituent_selector );
   
 };
 
@@ -149,16 +149,5 @@ private:
 
 /** the selector built from the above worker */
 fastjet::Selector SelectorUserIndex( const std::vector<int> usr_idx );
-
-//________________________________________________________________
-/** class that allows a pseudojet to be written directly to a TClonesArray */
-class TPseudoJet : public fastjet::PseudoJet, public TObject {
-public:
-  
-  TPseudoJet();
-  TPseudoJet( const fastjet::PseudoJet& ps );
-  
-};
-
 
 #endif

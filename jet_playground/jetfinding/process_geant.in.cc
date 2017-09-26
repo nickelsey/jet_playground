@@ -144,7 +144,7 @@ int main ( int argc, const char** argv ) {
   
   /** loop over events */
   while ( event.next() ) {
-    event.process_event( jet_def, area_def, track_selector, jet_selector, inclusive_jets, charged_jets  );
+    event.process_event( jet_def, area_def, track_selector, jet_selector, charged_jets  );
     event.fill_trees();
   }
   

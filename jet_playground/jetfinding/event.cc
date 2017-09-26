@@ -1,39 +1,52 @@
 
 #include "event.hh"
 
+#include "TSystem.h"
+
 #include "fastjet/ClusterSequenceArea.hh"
 
 #include <exception>
+#include <functional>
 
-event::event( const std::string& input_file,
-              const std::string& settings_doc ) : geant_reader( settings_doc, input_file ) {
-
+TLorentzVector ConvertPseudoJet(const fastjet::PseudoJet& jet) {
+  TLorentzVector tmp;
+  tmp.SetPxPyPzE(jet.px(), jet.py(), jet.pz(), jet.E());
+  return tmp;
 }
 
-event::~event() {
-  
-  if ( train_data_ ) delete train_data_;
+event::event( const std::string& input_file,
+              const std::string& settings_doc ) : geant_reader( settings_doc, input_file ),
+              train_data_(nullptr), geant_jets_({}), pythia_jets_({}), geant_jet_(),
+              pythia_jet_(), geant_constituents_(nullptr), pythia_constituents_(nullptr),
+              eventID(0)
+{ }
 
+event::~event() {
+  delete train_data_;
 }
 
 bool event::process_event( const fastjet::JetDefinition& jet_def, const fastjet::AreaDefinition& area_def,
                           const fastjet::Selector& constituent_selector, const fastjet::Selector jet_selector,
-                          bool inclusive_jets, bool charged_jets ) {
+                          bool charged_jets ) {
   /** selects if we use the charged or full jet reconstruction */
   if ( charged_jets ) return process_charged( jet_def, area_def, constituent_selector,
-                                              jet_selector, inclusive_jets );
+                                              jet_selector );
   else                return process_full( jet_def, area_def, constituent_selector,
-                                             jet_selector, inclusive_jets );
+                                             jet_selector );
 }
 
 bool event::process_full( const fastjet::JetDefinition& jet_def, const fastjet::AreaDefinition& area_def,
-                     const fastjet::Selector& constituent_selector, const fastjet::Selector jet_selector,
-                     bool inclusive_jets ) {
+                     const fastjet::Selector& constituent_selector, const fastjet::Selector jet_selector
+                      ) {
   
   /* clear any jets from the last event
      for cleanliness */
   geant_jets_.clear();
   pythia_jets_.clear();
+  
+  /* clear the constituents */
+  geant_constituents_->Clear();
+  pythia_constituents_->Clear();
   
   std::vector<fastjet::PseudoJet> geant_constituents = constituent_selector( geant_pseudojets() );
   std::vector<fastjet::PseudoJet> pythia_constituents = constituent_selector( pythia_pseudojets() );
@@ -46,20 +59,20 @@ bool event::process_full( const fastjet::JetDefinition& jet_def, const fastjet::
   
   match_jets( jet_def.R() );
   
-  if ( inclusive_jets ) fill_tree_inclusive( constituent_selector );
-  else fill_tree( constituent_selector );
+  fill_tree( constituent_selector );
   
   return true;
 }
 
 bool event::process_charged( const fastjet::JetDefinition& jet_def, const fastjet::AreaDefinition& area_def,
-                            const fastjet::Selector& constituent_selector, const fastjet::Selector jet_selector,
-                            bool inclusive_jets ) {
+                            const fastjet::Selector& constituent_selector, const fastjet::Selector jet_selector
+                             ) {
   
   /* clear any jets from the last event
    for cleanliness */
   geant_jets_.clear();
   pythia_jets_.clear();
+  
   
   // create a selector that selects all tracks with user index ( charge ) of -1, 1
   fastjet::Selector charge_selector = SelectorUserIndex( std::vector<int> { -2, -1, 1, 2 } );
@@ -75,8 +88,7 @@ bool event::process_charged( const fastjet::JetDefinition& jet_def, const fastje
   
   match_jets( jet_def.R() );
   
-  if ( inclusive_jets ) fill_tree_inclusive( constituent_selector );
-  else fill_tree( constituent_selector );
+  fill_tree( constituent_selector );
   
   return true;
 }
@@ -90,19 +102,15 @@ void event::init_tree() {
   train_data_          = new TTree( "training", "training data" );
   
   // event information
+  geant_jet_.Clear();
+  pythia_jet_.Clear();
+  geant_constituents_ = new TClonesArray("TLorentzVector", 100);
+  pythia_constituents_ = new TClonesArray("TLorentzVector", 100);
   
-  
-  train_data_->Branch("pt", &train_pt_ );
-  train_data_->Branch("phi", &train_phi_ );
-  train_data_->Branch("eta", &train_eta_ );
-  train_data_->Branch("area", &train_area_ );
-  train_data_->Branch("ncharge", &train_npart_ );
-  train_data_->Branch("charge_frac", &train_charge_frac_ );
-  train_data_->Branch("weight", &train_weight );
-  
-  train_data_->Branch( "reco_pt", &label_pt_ );
-  train_data_->Branch( "reco_phi", &label_phi_ );
-  train_data_->Branch( "reco_eta", &label_eta_ );
+  train_data_->Branch("djet", &geant_jet_);
+  train_data_->Branch("pjet", &pythia_jet_);
+  train_data_->Branch("dconst", &geant_constituents_);
+  train_data_->Branch("pconst", &pythia_constituents_);
   
 }
 
@@ -119,7 +127,6 @@ void event::write_tree() {
 }
 
 void event::match_jets( double radius ) {
-  
   /** match jets such that the highest pt jets are matched preferentially,
       such that delta_R < resolution
    */
@@ -140,7 +147,7 @@ void event::match_jets( double radius ) {
     for ( unsigned j = 0; j < matched.size(); ++j ) {
       std::ptrdiff_t idx = std::find( matched_geant.begin(), matched_geant.end(), matched[j]  ) - matched_geant.begin();
       if ( idx < int ( matched_geant.size() ) ) {
-        matched.erase( std::find( matched.begin(), matched.end(), matched_pythia[idx]  ) );
+        matched.erase( std::find( matched.begin(), matched.end(), matched_geant[idx]  ) );
       }
     }
     
@@ -161,49 +168,39 @@ void event::match_jets( double radius ) {
 void event::fill_tree( const fastjet::Selector& constituent_selector  ) {
   if ( geant_jets_.size() == 0 ||
       pythia_jets_.size() == 0  ) { return; }
-  
-  // for charged fraction need the charge selector
-  fastjet::Selector charge_selector = SelectorUserIndex( std::vector<int> { -2, -1, 1, 2 } ) * constituent_selector;
-  
-  train_pt_ = geant_jets_[0].pt();
-  train_eta_ = geant_jets_[0].eta();
-  train_phi_ = geant_jets_[0].phi();
-  train_area_ = geant_jets_[0].area();
-  train_npart_ = charge_selector( constituent_selector( geant_jets_[0].constituents() ) ).size();
-  train_charge_frac_ = ((double) charge_selector( geant_jets_[0].constituents() ).size() ) / constituent_selector( geant_jets_[0].constituents() ).size();
-  train_weight = LookupXsec();
-  
-  label_pt_ = pythia_jets_[0].pt();
-  label_eta_ = pythia_jets_[0].eta();
-  label_phi_ = pythia_jets_[0].phi();
-  
-  train_data_->Fill();
-  
-}
+  if (geant_jets_.size() != pythia_jets_.size()) {
+    std::cerr<<"error in matching"<<std::endl;
+    return;
+  }
 
-void event::fill_tree_inclusive( const fastjet::Selector& constituent_selector  ) {
-  if ( geant_jets_.size() != pythia_jets_.size() )
-  { std::cerr << "error in jet number! exiting" << std::endl; throw -1; }
+  // create event ID first
+  std::hash<std::string> hash;
+  std::string id_string = std::to_string(get_geant_reader().GetEvent()->GetHeader()->GetRunId())
+                        + std::to_string(get_geant_reader().GetEvent()->GetHeader()->GetEventId());
+  eventID = hash(id_string);
+
   
-  // for charged fraction need the charge selector
-  fastjet::Selector charge_selector = SelectorUserIndex( std::vector<int> { -2, -1, 1, 2 } ) * constituent_selector;
-  
-  for ( unsigned i = 0; i < geant_jets_.size(); ++i ) {
-    train_pt_ = geant_jets_[i].pt();
-    train_eta_ = geant_jets_[i].eta();
-    train_phi_ = geant_jets_[i].phi();
-    train_area_ = geant_jets_[i].area();
-    train_npart_ = constituent_selector( geant_jets_[i].constituents() ).size();
-    train_charge_frac_ = ((double) charge_selector( geant_jets_[i].constituents() ).size() ) / constituent_selector( geant_jets_[i].constituents() ).size();
-    train_weight = LookupXsec();
+  for (int i = 0; i < geant_jets_.size(); ++i) {
+    geant_jet_ = ConvertPseudoJet(geant_jets_[i]);
+    pythia_jet_ = ConvertPseudoJet(pythia_jets_[i]);
     
-    label_pt_ = pythia_jets_[i].pt();
-    label_eta_ = pythia_jets_[i].eta();
-    label_phi_ = pythia_jets_[i].phi();
+    std::vector<fastjet::PseudoJet> dconst = geant_jets_[i].constituents();
+    std::vector<fastjet::PseudoJet> pconst = pythia_jets_[i].constituents();
+    
+    for (int j = 0; j < dconst[i].constituents().size();++j){
+      new((*geant_constituents_)[j]) TLorentzVector(ConvertPseudoJet(dconst[j]));
+    }
+    for (int j = 0; j < pconst[i].constituents().size();++j){
+      new((*pythia_constituents_)[j]) TLorentzVector(ConvertPseudoJet(pconst[j]));
+    }
+    
     
     train_data_->Fill();
-    
+    geant_constituents_->Clear();
+    pythia_constituents_->Clear();
   }
+  
+  
 }
 
 //---------------------------------------------------
@@ -212,10 +209,5 @@ void event::fill_tree_inclusive( const fastjet::Selector& constituent_selector  
 fastjet::Selector SelectorUserIndex( const std::vector<int> usr_idx = std::vector<int>{ -2, -1, 0, 1, 2 } ) {
   return fastjet::Selector( new SelectorUserIndexWorker( usr_idx ) );
 }
-
-//________________________________________________________________
-/** class that allows a pseudojet to be written directly to a TClonesArray */
-TPseudoJet::TPseudoJet() : fastjet::PseudoJet(), TObject() {}
-TPseudoJet::TPseudoJet( const fastjet::PseudoJet& ps ) : fastjet::PseudoJet(ps), TObject() {}
 
 
